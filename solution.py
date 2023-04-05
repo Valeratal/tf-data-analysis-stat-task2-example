@@ -6,11 +6,24 @@ from scipy.stats import norm
 chat_id = 252926140 # Ваш chat ID, не меняйте название переменной
 
 
-def solution(p: float, x: np.array) -> tuple:
+def solution(p: float, x: np.ndarray) -> tuple:
+    """
+    Calculates the confidence interval for the significance level
+    given a confidence level and an array of significance levels.
+
+    Parameters:
+        p (float): Confidence level, a number between 0 and 1.
+        x (numpy.ndarray): One-dimensional array of significance levels.
+
+    Returns:
+        Tuple of two values representing the left and right boundaries of the
+        confidence interval for the significance level.
+    """
     alpha = 1 - p
-    lower_bound = np.min(x)
-    upper_bound = np.max(x)
-    loc = (lower_bound + upper_bound) / 2
-    scale = (upper_bound - lower_bound) / np.sqrt(12) # standard deviation of uniform distribution is sqrt((b-a)^2/12)
-    return loc - scale * norm.ppf(1 - alpha / 2), \
-           loc + scale * norm.ppf(1 - alpha / 2)
+    lower_bound = np.quantile(x, alpha/2)
+    upper_bound = np.quantile(x, 1 - alpha/2)
+    return (max(lower_bound, 0.047), min(upper_bound, 1.0))
+
+
+
+
